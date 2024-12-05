@@ -18,6 +18,10 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
     private final double MaxSpeed;
+    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+    private final NetworkTable table = inst.getTable("Pose");
+    final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
@@ -29,11 +33,8 @@ public class Telemetry {
     }
 
     /* What to publish over networktables for telemetry */
-    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     /* Robot pose for field positioning */
-    private final NetworkTable table = inst.getTable("Pose");
-    private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
 
     /* Robot speeds for general checking */
@@ -74,7 +75,7 @@ public class Telemetry {
     };
 
     /* Accept the swerve drive state and telemeterize it to smartdashboard */
-    public void telemeterize(SwerveDriveState state) {
+    public double telemeterize(SwerveDriveState state) {
         /* Telemeterize the pose */
         Pose2d pose = state.Pose;
         fieldTypePub.set("Field2d");
@@ -83,7 +84,7 @@ public class Telemetry {
             pose.getY(),
             pose.getRotation().getDegrees()
         });
-
+        SmartDashboard.putNumber("Rotation of Rob", pose.getRotation().getDegrees());
         /* Telemeterize the robot's general speeds */
         double currentTime = Utils.getCurrentTimeSeconds();
         double diffTime = currentTime - lastTime;
@@ -106,5 +107,6 @@ public class Telemetry {
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
+        return pose.getRotation().getDegrees();
     }
 }
