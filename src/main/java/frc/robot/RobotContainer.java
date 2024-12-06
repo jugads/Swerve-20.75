@@ -27,7 +27,7 @@ public class RobotContainer {
 
   //Constants Defined
   private double MaxSpeed = kMaxSpeed; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = Math.PI * 3;/// (20.75 * Math.PI * 0.0254); // 3/4 of a rotation per second max angular velocity
+  private double MaxAngularRate = Math.PI*3; // 3/4 of a rotation per second max angular velocity
 
   //Setting up Joystick and Drivetrain Object
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
