@@ -20,8 +20,11 @@ public class Straighten extends Command {
   SwerveRequest.FieldCentric drive;
   PIDController controller = new PIDController(0.01, 0., 0.);
   private final Telemetry telemetry = new Telemetry(kMaxSpeed);
-  public Straighten(CommandSwerveDrivetrain drivetrain) {
+
+
+  public Straighten(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentric drive) {
     m_drivetrain = drivetrain;
+    this.drive = drive;
     addRequirements(m_drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,9 +32,6 @@ public class Straighten extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drive = new SwerveRequest.FieldCentric()
-      .withDeadband(kMaxSpeed * 0.1).withRotationalDeadband(kMaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     controller.setSetpoint(0.);
     controller.setTolerance(0.1);
     m_drivetrain.registerTelemetry(telemetry::telemeterize);
@@ -43,12 +43,13 @@ public class Straighten extends Command {
     m_drivetrain.applyRequest(() -> drive.withVelocityX(0.) // Drive forward with
     // negative Y (forward)
     .withVelocityY(0.) // Drive left with negative X (left)
-    .withRotationalRate(kMaxSpeed * controller.calculate(telemetry.telemeterize(m_drivetrain.getState())))); // Drive counterclockwise with negative X (left)
+    .withRotationalRate(kMaxSpeed * controller.calculate(telemetry.getCurrentRot()))); // Drive counterclockwise with negative X (left)
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

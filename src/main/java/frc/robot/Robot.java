@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    
+    CommandScheduler.getInstance().run(); 
   }
 
   @Override
@@ -89,10 +89,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    // for (int i = 0; i<buffer.getLength(); i++) {
-    //   buffer.setLED(i, Color.kBlack);
-    // }
-    // leds.setData(buffer);
+    for (int i = 0; i<buffer.getLength(); i++) {
+      buffer.setLED(i, Color.kBlack);
+    }
+    leds.setData(buffer);
   }
 
   @Override
