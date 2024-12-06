@@ -72,10 +72,11 @@ public class RobotContainer {
 
     //Left Trigger Straightens the Robot
     joystick.leftTrigger().whileTrue(
-      drivetrain.applyRequest(() -> driveRobotRelative.withVelocityX(0.) // Drive forward with                                                                                // negative Y (forward)
-        .withVelocityY(0.) // Drive left with negative X (left)
-          .withRotationalRate(controller.calculate(logger.getCurrentRot(), 0) * MaxAngularRate) // Drive counterclockwise with negative X (left)
-    )
+    //   drivetrain.applyRequest(() -> driveRobotRelative.withVelocityX(0.) // Drive forward with                                                                                // negative Y (forward)
+    //     .withVelocityY(0.) // Drive left with negative X (left)
+    //       .withRotationalRate(controller.calculate(logger.getCurrentRot(), 0) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+    // )
+    new Straighten(drivetrain, drive)
     );
 
     //A button Brakes
