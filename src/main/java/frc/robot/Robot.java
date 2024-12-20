@@ -8,28 +8,36 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Leds;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-
-  private AddressableLED leds;
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  private Leds leds;
   private AddressableLEDBuffer buffer;
+  private AddressableLED ledsObject = new AddressableLED(5);
   private Timer timer;
+  private boolean increasing = true; // Tracks if brightness is increasing
+private double brightness = 0;     // Current brightness (0-1 range)
+private final double fadeSpeed = 0.1; // Adjust this value for fade speed
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
+  buffer = new AddressableLEDBuffer(138); // 138 LEDs
+    ledsObject.setLength(buffer.getLength());
+    ledsObject.setData(buffer);
+    ledsObject.start();
     // Initialize LEDs
-    leds = new AddressableLED(9); // PWM port 9
-    buffer = new AddressableLEDBuffer(138); // 138 LEDs
-    leds.setLength(buffer.getLength());
-    leds.setData(buffer);
-    leds.start();
+    leds = new Leds(ledsObject, buffer); // PWM port 9
+    
 
     // Initialize timer for animation
     
@@ -63,7 +71,7 @@ public class Robot extends TimedRobot {
     }
 
     // Push updated LED data to the strip
-    leds.setData(buffer);
+    ledsObject.setData(buffer);
   }
 
   @Override
@@ -89,14 +97,40 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    for (int i = 0; i<buffer.getLength(); i++) {
-      buffer.setLED(i, Color.kBlack);
-    }
-    leds.setData(buffer);
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  //   if (increasing) {
+  //     brightness += fadeSpeed;
+  //     if (brightness >= 1.0) { // Reached maximum brightness
+  //         brightness = 1.0;
+  //         increasing = false; // Start fading out
+  //     }
+  // } else {
+  //     brightness -= fadeSpeed;
+  //     if (brightness <= 0.0) { // Reached minimum brightness
+  //         brightness = 0.0;
+  //         increasing = true; // Start fading in
+  //     }
+  // }
+
+  // // Set LED colors based on brightness
+  // for (int i = 0; i < buffer.getLength(); i++) {
+  //     buffer.setLED(i, new Color(brightness, 0, 0)); // Red with variable brightness
+  // }
+  if (drivetrain.getTV()) {
+  leds.setAll(Color.kOrangeRed);
+  }
+  else {
+    leds.setAll(Color.kPurple);
+  }
+  // Push updated LED data to the strip
+  ledsObject.setData(buffer);
+
+  // Optionally log the brightness for debugging
+  SmartDashboard.putNumber("LED Brightness", brightness);
+  }
 
   @Override
   public void teleopExit() {}

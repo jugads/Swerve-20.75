@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class Telemetry {
     private final double MaxSpeed;
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-
+    Double x;
     private final NetworkTable table = inst.getTable("Pose");
     final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
 
@@ -85,6 +85,8 @@ public class Telemetry {
             pose.getRotation().getDegrees()
         });
         SmartDashboard.putNumber("Rotation of Rob", pose.getRotation().getDegrees());
+        // SmartDashboard.putNumber("X of Rob", pose.getX());
+        x = pose.getX();
         /* Telemeterize the robot's general speeds */
         double currentTime = Utils.getCurrentTimeSeconds();
         double diffTime = currentTime - lastTime;
@@ -111,4 +113,10 @@ public class Telemetry {
     public double getCurrentRot() {
         return pose.getRotation().getDegrees();
     }
+    public double getCurrentX() {
+        return x;
+    }
+    // public double getCurrentY() {
+    //     return pose.getY();
+    // }
 }

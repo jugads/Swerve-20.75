@@ -3,6 +3,7 @@ package frc.robot.commands;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Telemetry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -12,8 +13,8 @@ public class Straighten extends CommandBase {
     private final CommandSwerveDrivetrain m_drivetrain;
     private final SwerveRequest.FieldCentric drive;
     SwerveRequest.FieldCentric updatedDrive;
-    private final PIDController controller = new PIDController(0.025, 0., 0.001);
-    private final PIDController controller1 = new PIDController(0.045, 0., 0.0005);
+    private final PIDController controller = new PIDController(0.025, 0., 0.004);
+    private final PIDController controller1 = new PIDController(0.045, 0., 0.004);
     private final Telemetry telemetry;
 
     public Straighten(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentric drive) {
