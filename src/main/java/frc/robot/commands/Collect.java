@@ -42,10 +42,7 @@ public class Collect extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double velocity = ((-kMaxSpeed * driveController.calculate(m_drivetrain.getTY())));
-    m_drivetrain.applyRequest(() -> drive
-            .withVelocityX(velocity)
-            .withRotationalRate(kMaxAngularRate * turnController.calculate(m_drivetrain.getTX())));
+    
     System.out.println("Command");
     // SmartDashboard.putNumber("Applied Velocity", velocity);
   }

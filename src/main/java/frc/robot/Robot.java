@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,9 +30,10 @@ public class Robot extends TimedRobot {
   private boolean increasing = true; // Tracks if brightness is increasing
 private double brightness = 0;     // Current brightness (0-1 range)
 private final double fadeSpeed = 0.1; // Adjust this value for fade speed
-
+  
   @Override
   public void robotInit() {
+    
     m_robotContainer = new RobotContainer();
   buffer = new AddressableLEDBuffer(138); // 138 LEDs
     ledsObject.setLength(buffer.getLength());
@@ -37,8 +41,6 @@ private final double fadeSpeed = 0.1; // Adjust this value for fade speed
     ledsObject.start();
     // Initialize LEDs
     leds = new Leds(ledsObject, buffer); // PWM port 9
-    
-
     // Initialize timer for animation
     
   }
@@ -52,6 +54,9 @@ private final double fadeSpeed = 0.1; // Adjust this value for fade speed
   public void disabledInit() {
     timer = new Timer();
     timer.start();
+    DataLogManager.start();
+    DataLog log = DataLogManager.getLog();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   @Override
@@ -120,7 +125,7 @@ private final double fadeSpeed = 0.1; // Adjust this value for fade speed
   //     buffer.setLED(i, new Color(brightness, 0, 0)); // Red with variable brightness
   // }
   if (drivetrain.getTV()) {
-  leds.setAll(Color.kOrangeRed);
+  leds.setAll(Color.kCyan);
   }
   else {
     leds.setAll(Color.kPurple);

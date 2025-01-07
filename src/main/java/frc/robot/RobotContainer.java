@@ -42,9 +42,10 @@ public class RobotContainer {
   //Setting up Joystick and Drivetrain Object
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
-
+  private final PIDController turnController = new PIDController(0.0035, 0., 0.0005);
+  private final PIDController driveController = new PIDController(0.08, 0., 0.00425);
   //Setting up PIDController, as well as both RobotRelative and FieldRelative SwerveRequests
-  PIDController controller = new PIDController(0.00725, 0.0001, 0.00013);
+  // PIDController controller = new PIDController(0.00725, 0.0001, 0.00013);
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.09) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
@@ -85,7 +86,10 @@ public class RobotContainer {
     new Straighten(drivetrain, drive)
     );
     joystick.x().whileTrue(
-      new Collect(drivetrain, driveRobotRelative)
+      drivetrain.applyRequest(() -> driveRobotRelative
+            .withVelocityX(((-kMaxSpeed * driveController.calculate(drivetrain.getTY()))))
+            .withRotationalRate(kMaxAngularRate * turnController.calculate(drivetrain.getTX()))
+            ).until(() -> !drivetrain.getTV())
     );
 
     //A button Brakes
@@ -118,6 +122,10 @@ public class RobotContainer {
   //Call configureBindings()
   public RobotContainer() {
     configureBindings();
+    turnController.setSetpoint(0.);
+    driveController.setSetpoint(0.);
+    turnController.setTolerance(2);
+    driveController.setTolerance(1);
     example = Shuffleboard.getTab("My Tab")
    .add("My Number", 0)
    .withWidget(BuiltInWidgets.kNumberSlider)
